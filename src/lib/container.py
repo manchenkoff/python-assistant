@@ -10,7 +10,7 @@ class Container:
     def speech(self) -> SpeechInterface:
         return Speech(
             os.getenv("APP_LANGUAGE"),
-            os.getenv("ASSISTANT_METHOD"), os.getenv("TEMP_SOUNDS")
+            os.getenv("ASSISTANT_METHOD")
         )
 
     @property

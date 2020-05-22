@@ -24,14 +24,12 @@ class Speech(SpeechInterface):
     language: str
     recognizer: Recognizer
     recognizer_method: str
-    sounds_path: str
     recording_executor: ThreadPoolExecutor
 
-    def __init__(self, language: str, method: str, sounds_path: str):
+    def __init__(self, language: str, method: str):
         self.recognizer = Recognizer()
         self.language = language
         self.recognizer_method = method
-        self.sounds_path = sounds_path
 
     @async_function
     def _get_audio_from_microphone(self):
