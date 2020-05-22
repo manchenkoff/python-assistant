@@ -1,7 +1,7 @@
 import asyncio
 import tempfile
 
-from PySide2.QtCore import QFile, QThread
+from PySide2.QtCore import QFile
 from PySide2.QtGui import QCloseEvent
 from PySide2.QtWidgets import QMainWindow
 from playsound import playsound
