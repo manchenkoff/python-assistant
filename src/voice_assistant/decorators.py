@@ -1,11 +1,11 @@
 import asyncio
-import functools
+from functools import partial, wraps
 
 
 def async_function(func):
-    @functools.wraps(func)
+    @wraps(func)
     def inner(*args, **kwargs):
         loop = asyncio.get_running_loop()
-        return loop.run_in_executor(None, functools.partial(func, *args, **kwargs))
+        return loop.run_in_executor(None, partial(func, *args, **kwargs))
 
     return inner

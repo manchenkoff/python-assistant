@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Optional
 
 from voice_assistant.speech import SpeechInterface
 
 
 class AssistantInterface(ABC):
     @abstractmethod
-    async def handle(self, question: Union[str, None] = None) -> str:
+    async def handle(self, question: Optional[str] = None) -> str:
         raise NotImplementedError
 
     @abstractmethod
@@ -36,7 +36,7 @@ class AssistantInterface(ABC):
         pass
 
 
-class ActionInterface(ABC):
+class HandlerInterface(ABC):
     assistant: AssistantInterface
 
     def __init__(self, assistant: AssistantInterface):
@@ -52,26 +52,26 @@ class ActionInterface(ABC):
 
 
 class Assistant(AssistantInterface):
-    _name: str
-    _language: str
-    _voice: SpeechInterface
-    _actions: List[ActionInterface]
+    name: str
+    language: str
+    speech: SpeechInterface
+    handlers: List[HandlerInterface]
 
-    def __init__(self, name: str, language: str, speech_service: SpeechInterface, action_classes: List[type]):
-        self._name = name
-        self._language = language
-        self._voice = speech_service
-        self._bind_actions(action_classes)
+    def __init__(self, name: str, language: str, speech_service: SpeechInterface, handlers: List[type]):
+        self.name = name
+        self.language = language
+        self.speech = speech_service
+        self._bind_handlers(handlers)
 
-    def _bind_actions(self, actions: List[type]):
-        self._actions = [x(self) for x in actions]
+    def _bind_handlers(self, actions: List[type]):
+        self.handlers = [x(self) for x in actions]
 
     def get_name(self) -> str:
-        return self._name
+        return self.name
 
-    async def listen(self) -> Union[str, None]:
+    async def listen(self) -> Optional[str]:
         self.on_assistant_listen()
-        user_text = await self._voice.listen()
+        user_text = await self.speech.listen()
 
         if user_text:
             self.on_user_message(user_text)
@@ -79,11 +79,10 @@ class Assistant(AssistantInterface):
         return user_text
 
     async def say(self, text: str) -> None:
-        signed_text = f"[{self._name}] {text}"
-        self.on_assistant_message(signed_text)
-        await self._voice.say(text)
+        self.on_assistant_message(text)
+        await self.speech.say(text)
 
-    async def handle(self, question: Union[str, None] = None) -> None:
+    async def handle(self, question: Optional[str] = None):
         self.on_wake()
 
         if question:
@@ -99,7 +98,7 @@ class Assistant(AssistantInterface):
     async def _process_message(self, message: str):
         context = message.strip().lower()
 
-        for action in self._actions:
+        for action in self.handlers:
             if action.check_context(context):
                 await action.handle_context(context)
                 break

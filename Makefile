@@ -12,8 +12,11 @@ sync: ## Install dependencies
 clean: ## Clean up distributable files
 	@rm -Rf ./build ./dist
 
-build: clean ## Build application
+build: res clean ## Build application
 	@pipenv run pyinstaller main.spec
+
+res: ## Package resources into Python file
+	@pipenv run pyside2-rcc ./src/data/resources.qrc -o ./src/voice_assistant/interface/resources.py
 
 run: ## Run application
 	@cd src/ && pipenv run python -m main

@@ -3,4 +3,7 @@
     <qresource prefix="sounds">
         <file alias="click.mp3">audio/click.mp3</file>
     </qresource>
+    <qresource prefix="styles">
+        <file alias="style.css">styles/style.css</file>
+    </qresource>
 </RCC>
