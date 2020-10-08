@@ -1,8 +1,8 @@
 import os
 
-from src.lib.actions import *
-from src.lib.assistant import AssistantInterface, Assistant
-from src.lib.speech import SpeechInterface, Speech
+from voice_assistant.actions import *
+from voice_assistant.assistant import Assistant, AssistantInterface
+from voice_assistant.speech import Speech, SpeechInterface
 
 
 class Container:

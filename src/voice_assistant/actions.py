@@ -1,7 +1,7 @@
 import random
 from typing import List
 
-from src.lib.assistant import ActionInterface, AssistantInterface
+from voice_assistant.assistant import ActionInterface, AssistantInterface
 
 
 class DefaultAction(ActionInterface):

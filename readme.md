@@ -6,10 +6,12 @@ Simple GUI application to work with voice assistant
 
 Just download and run `make build` then use executable file from `dist` directory
 
-## Project installation
+**Available commands** - execute `make` for details
 
-To install this project with dependencies run the following command
-
-```
-pip install -r requirements.txt
+```bash
+build                          Build application
+clean                          Clean up distributable files
+help                           Show this message
+run                            Run application
+sync                           Install dependencies
 ```

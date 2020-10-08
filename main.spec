@@ -12,7 +12,7 @@ load_dotenv()
 block_cipher = None
 application_name = os.getenv('APP_NAME')
 application_id = os.getenv('APP_ID')
-icon_file = './resources/images/icon'
+icon_file = 'src/data/images/icon'
 icon_extension = '.icns' if platform.system() == 'Darwin' else '.ico'
 icon_compiled_file = f"{icon_file}{icon_extension}"
 
@@ -22,7 +22,6 @@ a = Analysis(['main.py'],
              datas=[
                  ('.env', '.'),
                  (icon_compiled_file, '.'),
-                 (os.getenv("CLICK_SOUND"), os.path.dirname(os.getenv("CLICK_SOUND"))),
              ],
              hiddenimports=[
                  "pkg_resources.py2_warn"

@@ -1,7 +1,7 @@
-from abc import abstractmethod, ABC
-from typing import Union, List
+from abc import ABC, abstractmethod
+from typing import List, Union
 
-from src.lib.speech import SpeechInterface
+from voice_assistant.speech import SpeechInterface
 
 
 class AssistantInterface(ABC):

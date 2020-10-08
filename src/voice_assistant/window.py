@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
+import asyncio
+import tempfile
 
-################################################################################
-## Form generated from reading UI file 'window.ui'
-##
-## Created by: Qt User Interface Compiler version 5.14.2
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
+from playsound import playsound
+from PySide2.QtCore import QCoreApplication, QFile, QMetaObject, QSize, Qt
+from PySide2.QtGui import QCloseEvent, QFont
+from PySide2.QtWidgets import QMainWindow, QPlainTextEdit, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
-from PySide2.QtCore import (QCoreApplication, QMetaObject,
-                            QSize, Qt)
-from PySide2.QtGui import (QFont)
-from PySide2.QtWidgets import *
+from voice_assistant.assistant import AssistantInterface
+from voice_assistant.decorators import async_function
+from voice_assistant.resources import qInitResources
 
 
 class Ui_window(object):
@@ -92,3 +89,69 @@ class Ui_window(object):
         # endif // QT_CONFIG(shortcut)
         pass
     # retranslateUi
+
+
+class MainWindow(QMainWindow, Ui_window):
+    assistant: AssistantInterface
+
+    def __init__(self, assistant: AssistantInterface):
+        super().__init__()
+        qInitResources()
+        self.setupUi(self)
+        self.assistant = assistant
+        self.init_handlers()
+
+    def init_handlers(self):
+        self.recognize_button.pressed.connect(self.start_recognition)
+        self.assistant.on_wake = self.on_assistant_started
+        self.assistant.on_sleep = self.on_assistant_finished
+        self.assistant.on_assistant_listen = self.on_recognize_started
+        self.assistant.on_user_message = self.on_user_text
+        self.assistant.on_assistant_message = self.on_assistant_text
+
+    def on_assistant_started(self):
+        self.recognize_button.setEnabled(False)
+
+    def on_assistant_finished(self):
+        self.recognize_button.setEnabled(True)
+        self.recognize_button.setText("Recognize")
+
+    def on_recognize_started(self):
+        self.click_sound_concurrently()
+        self.recognize_button.setText("Listening...")
+
+    def on_user_text(self, user_text: str):
+        self.recognize_button.setText("Processing...")
+        self.append_message(f"[You] {user_text}")
+
+    def on_assistant_text(self, assistant_answer: str):
+        self.append_message(assistant_answer)
+
+    def append_message(self, message: str):
+        self.text_box.appendPlainText(f"{message}\n")
+
+    def start_recognition(self):
+        coroutine = self.assistant.handle()
+        asyncio.create_task(coroutine)
+
+    @async_function
+    def click_sound_concurrently(self):
+        resource_path = ":/sounds/click.mp3"
+
+        file = QFile(resource_path)
+        file.open(QFile.ReadOnly)
+
+        byte_array = file.readAll()
+
+        file.close()
+
+        with tempfile.NamedTemporaryFile("wb", delete=True) as temp:
+            temp.write(byte_array.data())
+            playsound(temp.name)
+
+    def closeEvent(self, event: QCloseEvent):
+        for task in asyncio.tasks.Task.all_tasks():
+            task.cancel()
+
+    async def start(self):
+        self.show()

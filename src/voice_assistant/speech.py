@@ -1,13 +1,13 @@
 import tempfile
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Union
 
 from gtts import gTTS
 from playsound import playsound
-from speech_recognition import AudioData, Microphone, Recognizer, UnknownValueError, RequestError, WaitTimeoutError
+from speech_recognition import AudioData, Microphone, Recognizer, RequestError, UnknownValueError, WaitTimeoutError
 
-from src.lib.decorators import async_function
+from voice_assistant.decorators import async_function
 
 
 class SpeechInterface(ABC):

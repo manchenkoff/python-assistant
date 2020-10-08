@@ -3,16 +3,16 @@ import os
 import sys
 from asyncio import AbstractEventLoop
 
-from PySide2.QtWidgets import QApplication
 from asyncqt import QEventLoop
 from dotenv import load_dotenv
+from PySide2.QtWidgets import QApplication
 
-from src.application import MainWindow
-from src.lib.container import Container
+from voice_assistant.container import Container
+from voice_assistant.window import MainWindow
 
 
 def init_environment():
-    env_path = '.env'
+    env_path = '../.env'
 
     if getattr(sys, 'frozen', False):
         env_path = os.path.join(os.path.dirname(sys.executable), env_path)
