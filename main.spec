@@ -16,7 +16,7 @@ icon_file = 'src/data/images/icon'
 icon_extension = '.icns' if platform.system() == 'Darwin' else '.ico'
 icon_compiled_file = f"{icon_file}{icon_extension}"
 
-a = Analysis(['main.py'],
+a = Analysis(['src/main.py'],
              pathex=['./'],
              binaries=[],
              datas=[
